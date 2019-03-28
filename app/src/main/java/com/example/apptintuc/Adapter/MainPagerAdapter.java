@@ -1,10 +1,12 @@
 package com.example.apptintuc.Adapter;
 
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.example.apptintuc.DanhMucTinTucFragment;
 import com.example.apptintuc.Object.DanhMuc;
 
 import java.util.ArrayList;
@@ -12,7 +14,7 @@ import java.util.List;
 
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
-    private List<Fragment> fragmentList = new ArrayList<>();
+    private List<DanhMucTinTucFragment> fragmentList = new ArrayList<>();
     private List<DanhMuc> tabTitles = new ArrayList<>();
 
 
@@ -23,7 +25,11 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        return fragmentList.get(i);
+        Bundle bundle = new Bundle();
+        bundle.putInt("idDanhMuc",tabTitles.get(i).getIdDanhMuc());
+        DanhMucTinTucFragment danhMucTinTucFragment =  fragmentList.get(i);
+        danhMucTinTucFragment.setArguments(bundle);
+        return danhMucTinTucFragment;
     }
 
     @Override
@@ -36,7 +42,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return tabTitles.get(position).getTenDanhMuc();
     }
-    public void addFragment(Fragment fragment, DanhMuc danhMucs) {
+    public void addFragment(DanhMucTinTucFragment fragment, DanhMuc danhMucs) {
         fragmentList.add(fragment);
         tabTitles.add(danhMucs);
     }
