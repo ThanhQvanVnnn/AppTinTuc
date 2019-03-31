@@ -1,6 +1,7 @@
 package com.example.apptintuc;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,14 +29,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DanhMucTinTucFragment extends Fragment {
+public class DanhMucTinTucFragment extends Fragment implements View.OnClickListener {
     private KenBurnsView kenBurnsView;
     private RecyclerView recyclerView;
     private TextView firstTitle;
     private List<TinTuc> tinTucs;
     private ApiService apiService;
     private NewsAdapter newsAdapter;
-
+    private TinTuc tinTuc;
     String id_danhmuc;
 
     @Nullable
@@ -45,7 +46,6 @@ public class DanhMucTinTucFragment extends Fragment {
         Bundle bundle = getArguments();
         id_danhmuc = bundle.getString("idDanhMuc");
         firstInits(view);
-
         return view;
     }
 
@@ -60,8 +60,9 @@ public class DanhMucTinTucFragment extends Fragment {
             @Override
             public void onResponse(Call<List<TinTuc>> call, Response<List<TinTuc>> response) {
                 tinTucs.addAll(response.body());
-                Picasso.get().load(tinTucs.get(0).getImg()).into(kenBurnsView);
-                firstTitle.setText(tinTucs.get(0).getTieude());
+                tinTuc = tinTucs.get(0);
+                Picasso.get().load(tinTuc.getImg()).into(kenBurnsView);
+                firstTitle.setText(tinTuc.getTieude());
                 newsAdapter = new NewsAdapter(getContext(),tinTucs);
                 recyclerView.setAdapter(newsAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
@@ -72,6 +73,19 @@ public class DanhMucTinTucFragment extends Fragment {
                 Log.d("kiemtra","Lỗi :"+t.getMessage().toString());
             }
         });
+        kenBurnsView.setOnClickListener(this);
+    }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.title_article_first:
+            case R.id.image_articel_first:
+                Intent intent = new Intent(getContext(),DetailArticle.class);
+                intent.putExtra("idNews",tinTuc.getId_tin());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(intent);
+                break;
+        }
     }
 }
