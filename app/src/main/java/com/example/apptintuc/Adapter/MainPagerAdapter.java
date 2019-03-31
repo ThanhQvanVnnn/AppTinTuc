@@ -26,7 +26,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int i) {
         Bundle bundle = new Bundle();
-        bundle.putInt("idDanhMuc",tabTitles.get(i).getIdDanhMuc());
+        bundle.putString("idDanhMuc",tabTitles.get(i).getId_loaitin());
         DanhMucTinTucFragment danhMucTinTucFragment =  fragmentList.get(i);
         danhMucTinTucFragment.setArguments(bundle);
         return danhMucTinTucFragment;
@@ -40,7 +40,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return tabTitles.get(position).getTenDanhMuc();
+        return tabTitles.get(position).getTen_loaitin();
     }
     public void addFragment(DanhMucTinTucFragment fragment, DanhMuc danhMucs) {
         fragmentList.add(fragment);

@@ -1,5 +1,6 @@
 package com.example.apptintuc;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -9,14 +10,22 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.apptintuc.Adapter.MainPagerAdapter;
+import com.example.apptintuc.Api.ApiService;
+import com.example.apptintuc.GetDataBase.FromRepository;
 import com.example.apptintuc.Object.DanhMuc;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import dmax.dialog.SpotsDialog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +38,8 @@ public class MainActivity extends AppCompatActivity
     private List<DanhMuc> danhmuc;
     private MainPagerAdapter mainPagerAdapter;
     private TabLayout tabLayout;
+    private ApiService apiService;
+    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,23 +56,31 @@ public class MainActivity extends AppCompatActivity
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
 
+        dialog = new SpotsDialog(this);
+        dialog.show();
+        apiService = FromRepository.getApiService();
         danhMucTinTucFragmentList = new ArrayList<>();
         danhmuc = new ArrayList<>();
-        danhmuc.add(new DanhMuc("Thời Sự",1));
-        danhmuc.add(new DanhMuc("Kinh Tế",2));
-        danhmuc.add(new DanhMuc("Văn Hóa",3));
-        danhmuc.add(new DanhMuc("Thể Dục",4));
-        danhmuc.add(new DanhMuc("Thể Thao",5));
-        danhmuc.add(new DanhMuc("Đời Sống",6));
-        danhmuc.add(new DanhMuc("Giải Trí",7));
         mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(mainPagerAdapter);
+        apiService.getDanhMuc("LayDanhSachDanhMuc").enqueue(new Callback<List<DanhMuc>>() {
+            @Override
+            public void onResponse(Call<List<DanhMuc>> call, Response<List<DanhMuc>> response) {
+                dialog.dismiss();
+                danhmuc.addAll(response.body());
+                viewPager.setAdapter(mainPagerAdapter);
+                for (DanhMuc danhMuc : danhmuc) {
+                    mainPagerAdapter.addFragment(new DanhMucTinTucFragment(), danhMuc);
+                }
+                mainPagerAdapter.notifyDataSetChanged();
+                tabLayout.setupWithViewPager(viewPager);
+            }
 
-        for (DanhMuc danhMuc : danhmuc) {
-            mainPagerAdapter.addFragment(new DanhMucTinTucFragment(), danhMuc);
-        }
-        mainPagerAdapter.notifyDataSetChanged();
-        tabLayout.setupWithViewPager(viewPager);
+            @Override
+            public void onFailure(Call<List<DanhMuc>> call, Throwable t) {
+                Log.d("kiemtra","Lỗi :"+t.getMessage().toString());
+            }
+        });
+
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
