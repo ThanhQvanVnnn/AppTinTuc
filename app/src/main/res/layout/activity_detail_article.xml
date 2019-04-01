@@ -1,9 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DetailArticle">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/lineanerlayout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true"
+        android:background="@color/backgroundread"
+        android:orientation="horizontal">
+        <Button
+            android:text="Nhập Bình Luận"
+            android:textColor="@color/backgroundread"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textAllCaps="false"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="2"
+            android:background="@drawable/background_input_binhluan"
+            android:id="@+id/button_input_comment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <include
+            android:id="@+id/layout_iconbinhluan"
+            android:layout_weight="5"
+            android:layout_gravity="center"
+            layout="@layout/comment_number"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:paddingLeft="10dp"
+            android:layout_weight="5"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:id="@+id/luutin"
+            android:src="@drawable/ic_bookmark_border_white_24dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <com.example.apptintuc.Object.EditTextInPut
+            android:visibility="gone"
+            android:singleLine="true"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:hint="Nhập Bình Luận"
+            android:textColor="@color/backgroundread"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textAllCaps="false"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="2"
+            android:background="@drawable/background_input_binhluan"
+            android:id="@+id/edittext_input_comment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <ImageButton
+            android:visibility="gone"
+            android:background="@android:color/transparent"
+            android:id="@+id/send_button"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="10"
+            android:src="@drawable/ic_send_white_24dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/lineanerlayout">
+
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v4.widget.NestedScrollView>
+    <LinearLayout
+        android:visibility="invisible"
+        android:id="@+id/tool_header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/backgroundread"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageback"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arrow_back_black_24dp"
+                android:layout_width="50dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:textStyle="bold"
+                android:textColor="#FFF"
+                android:textSize="15sp"
+                android:id="@+id/textTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+    </LinearLayout>
+
+</RelativeLayout>

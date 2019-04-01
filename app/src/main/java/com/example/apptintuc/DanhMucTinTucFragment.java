@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -37,6 +38,7 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
     private ApiService apiService;
     private NewsAdapter newsAdapter;
     private TinTuc tinTuc;
+    private SwipeRefreshLayout swipeRefreshLayout;
     String id_danhmuc;
 
     @Nullable
@@ -46,6 +48,30 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
         Bundle bundle = getArguments();
         id_danhmuc = bundle.getString("idDanhMuc");
         firstInits(view);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                tinTucs = new ArrayList<>();
+
+                apiService.getTinTuc("LayDanhSachTinTuc",id_danhmuc).enqueue(new Callback<List<TinTuc>>() {
+                    @Override
+                    public void onResponse(Call<List<TinTuc>> call, Response<List<TinTuc>> response) {
+                        tinTucs.addAll(response.body());
+                        tinTuc = tinTucs.get(0);
+                        Picasso.get().load(tinTuc.getImg()).into(kenBurnsView);
+                        firstTitle.setText(tinTuc.getTieude());
+                        newsAdapter = new NewsAdapter(getContext(),tinTucs);
+                        recyclerView.setAdapter(newsAdapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<TinTuc>> call, Throwable t) {
+                        Log.d("kiemtra","Lỗi :"+t.getMessage().toString());
+                    }
+                });
+            }
+        });
         return view;
     }
 
@@ -53,6 +79,7 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
         kenBurnsView = view.findViewById(R.id.image_articel_first);
         recyclerView = view.findViewById(R.id.recycle_view);
         firstTitle = view.findViewById(R.id.title_article_first);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
         apiService = FromRepository.getApiService();
         tinTucs = new ArrayList<>();
 
@@ -82,8 +109,12 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
             case R.id.title_article_first:
             case R.id.image_articel_first:
                 Intent intent = new Intent(getContext(),DetailArticle.class);
-                intent.putExtra("idNews",tinTuc.getId_tin());
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Bundle bundle = new Bundle();
+                bundle.putInt("idNews", tinTuc.getId_tin());
+                bundle.putString("Content",tinTuc.getNoidung());
+                String tieude = tinTuc.getTieude();
+                bundle.putString("Tieude",tieude);
+                intent.putExtras(bundle);
                 getContext().startActivity(intent);
                 break;
         }

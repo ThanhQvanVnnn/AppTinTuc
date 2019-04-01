@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<List<DanhMuc>> call, Throwable t) {
-                Log.d("kiemtra","Lỗi :"+t.getMessage().toString());
+                Log.d("kiemtra","Lỗi : Lấy Danh Mục " + t.getMessage().toString());
             }
         });
 
