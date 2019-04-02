@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -78,12 +79,6 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                 setNumberBinhLuan();
             }
         });
-    }
-
-    public void setNumberBinhLuan(){
-        if(socomment==0){
-            soluongbinhluan.setVisibility(View.GONE);
-        }else soluongbinhluan.setText(socomment+"");
         button_binhluan.setOnClickListener(this);
         button_submitBinhLuan.setOnClickListener(this);
         luutrang.setOnClickListener(this);
@@ -103,11 +98,24 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
             }});
     }
 
+    public void setNumberBinhLuan(){
+        if(socomment==0){
+            soluongbinhluan.setVisibility(View.GONE);
+        }else
+        {
+            soluongbinhluan.setVisibility(View.VISIBLE);
+            soluongbinhluan.setText(socomment+"");
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.imageback:
                 hideKeyboard(this);
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("result",socomment);
+                setResult(Activity.RESULT_OK,returnIntent);
                 finish();
                 break;
             case R.id.button_input_comment:
@@ -123,23 +131,23 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                 if(binhluan.length() ==0){
                     Toast.makeText(this, "Vui lòng không để trống ", Toast.LENGTH_SHORT).show();
                 }else {
-                    apiService.ThemBinhLuan("ThemBinhLuan", String.valueOf(id_new),"thanhquanqwer@gmail.com",startDate.toString(),"quanle",binhluan).enqueue(new Callback<List<BinhLuan>>() {
+                    apiService.ThemBinhLuan("ThemBinhLuan", String.valueOf(id_new),"thanhquanqwer@gmail.com",startDate.toString(),"quanle",binhluan).enqueue(new Callback<String>() {
                         @Override
-                        public void onResponse(Call<List<BinhLuan>> call, Response<List<BinhLuan>> response) {
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            final String trave = response.body();
 
-                            if(response.body().size()==0){
+                            if (trave.equals("fail")) {
                                 Toast.makeText(DetailArticle.this, "Bình luân thất bại", Toast.LENGTH_SHORT).show();
-                            }else {
-                                soluongbinhluan.setText(response.body().size()+"");
+                            } else if (trave.equals("success")) {
                                 anEditBinhLuan();
-                                Toast.makeText(DetailArticle.this, "Bình luân thành công", Toast.LENGTH_SHORT).show();
-                                socomment = response.body().size();
+                                Toast.makeText(DetailArticle.this, "Bình luân thành công ", Toast.LENGTH_SHORT).show();
+                                socomment +=1;
                                 setNumberBinhLuan();
                             }
                         }
 
                         @Override
-                        public void onFailure(Call<List<BinhLuan>> call, Throwable t) {
+                        public void onFailure(Call<String> call, Throwable t) {
                             Log.d("kiemtra","Lỗi : Thêm Bình Luận " + t.getMessage());
                         }
                     });
@@ -152,32 +160,13 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                     Intent intent = new Intent(this,CommentActivity.class);
                     intent.putExtra("title",tieude);
                     intent.putExtra("maTin",id_new);
-                    startActivity(intent);
+                    startActivityForResult(intent,1);
                 }
                 break;
         }
     }
 
-    private void hienThiEditBinhLuan(){
-        button_binhluan.setVisibility(View.GONE);
-        luutrang.setVisibility(View.GONE);
-        layout_itconBinhLuan.setVisibility(View.GONE);
-        input_binhluan.setVisibility(View.VISIBLE);
-        button_submitBinhLuan.setVisibility(View.VISIBLE);
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
-        input_binhluan.requestFocus();
-    }
 
-    private void anEditBinhLuan(){
-        hideKeyboard(DetailArticle.this);
-        button_binhluan.setVisibility(View.VISIBLE);
-        luutrang.setVisibility(View.VISIBLE);
-        layout_itconBinhLuan.setVisibility(View.VISIBLE);
-        input_binhluan.setVisibility(View.GONE);
-        button_submitBinhLuan.setVisibility(View.GONE);
-        input_binhluan.setText("");
-    }
 
     private void firstInits() {
         webView = findViewById(R.id.webView);
@@ -242,10 +231,32 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("result",socomment);
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
     }
 
+    private void hienThiEditBinhLuan(){
+        button_binhluan.setVisibility(View.GONE);
+        luutrang.setVisibility(View.GONE);
+        layout_itconBinhLuan.setVisibility(View.GONE);
+        input_binhluan.setVisibility(View.VISIBLE);
+        button_submitBinhLuan.setVisibility(View.VISIBLE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+        input_binhluan.requestFocus();
+    }
+
+    private void anEditBinhLuan(){
+        hideKeyboard(DetailArticle.this);
+        button_binhluan.setVisibility(View.VISIBLE);
+        luutrang.setVisibility(View.VISIBLE);
+        layout_itconBinhLuan.setVisibility(View.VISIBLE);
+        input_binhluan.setVisibility(View.GONE);
+        button_submitBinhLuan.setVisibility(View.GONE);
+        input_binhluan.setText("");
+    }
 
     public void slideHideHeader(View view) {
         show = false;
@@ -320,6 +331,17 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                int result=data.getIntExtra("result",-100);
+                socomment = result;
+                setNumberBinhLuan();
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }
 }

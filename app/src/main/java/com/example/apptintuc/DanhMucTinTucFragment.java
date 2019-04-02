@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.apptintuc.Adapter.NewsAdapter;
 import com.example.apptintuc.Api.ApiService;
 import com.example.apptintuc.GetDataBase.FromRepository;
+import com.example.apptintuc.Object.BinhLuan;
 import com.example.apptintuc.Object.TinTuc;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.squareup.picasso.Picasso;
@@ -108,6 +109,7 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
             }
         });
         kenBurnsView.setOnClickListener(this);
+        firstTitle.setOnClickListener(this);
     }
 
     @Override
@@ -115,14 +117,25 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
         switch (v.getId()){
             case R.id.title_article_first:
             case R.id.image_articel_first:
-                Intent intent = new Intent(getContext(),DetailArticle.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt("idNews", tinTuc.getId_tin());
-                bundle.putString("Content",tinTuc.getNoidung());
-                String tieude = tinTuc.getTieude();
-                bundle.putString("Tieude",tieude);
-                intent.putExtras(bundle);
-                getContext().startActivity(intent);
+                apiService.getBinhLuanTheoMaTin("LayDanhSachBinhLuanTheoMa", tinTuc.getId_tin() + "").enqueue(new Callback<List<BinhLuan>>() {
+                    @Override
+                    public void onResponse(Call<List<BinhLuan>> call, Response<List<BinhLuan>> response) {
+                        int numbersize = response.body().size();
+                            Intent intent = new Intent(getContext(),DetailArticle.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("idNews", tinTuc.getId_tin());
+                            bundle.putString("Content",tinTuc.getNoidung());
+                            bundle.putString("Tieude", tinTuc.getTieude());
+                            bundle.putInt("SizeBinhLuan",numbersize);
+                            intent.putExtras(bundle);
+                            getContext().startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<BinhLuan>> call, Throwable t) {
+                        Log.d("Kiemtra", "Lỗi " + t.getMessage().toString());
+                    }
+                });
                 break;
         }
     }

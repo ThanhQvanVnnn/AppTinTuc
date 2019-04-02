@@ -19,6 +19,7 @@
         tools:ignore="VectorDrawableCompat" />
 
     <TextView
+        android:text="11"
         android:id="@+id/number_binhluan"
         android:layout_width="wrap_content"
         android:layout_height="21dp"

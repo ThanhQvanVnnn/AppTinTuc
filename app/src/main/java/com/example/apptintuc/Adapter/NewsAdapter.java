@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,14 +63,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         final TinTuc tinTuc = tinTucs.get(i);
+        final int[] numBinhLuan = {0};
         apiService.getBinhLuanTheoMaTin("LayDanhSachBinhLuanTheoMa", tinTuc.getId_tin() + "").enqueue(new Callback<List<BinhLuan>>() {
             @Override
             public void onResponse(Call<List<BinhLuan>> call, Response<List<BinhLuan>> response) {
                 binhLuanList = new ArrayList<>();
                 binhLuanList.addAll(response.body());
                 if (binhLuanList.size() != 0) {
+                    numBinhLuan[0] = binhLuanList.size();
                     viewHolder.iconcomment.setVisibility(View.VISIBLE);
-                    viewHolder.numbercomment.setText(binhLuanList.size() + "");
+                    viewHolder.numbercomment.setText(numBinhLuan[0] + "");
                 }
             }
 
@@ -97,35 +100,20 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
         CharSequence ago =
                 DateUtils.getRelativeTimeSpanString(time, now, DateUtils.HOUR_IN_MILLIS);
-
         viewHolder.time.setText(ago);
-        viewHolder.setItemClickListener(new ItemClickListener() {
-            @Override
-            public void onClick(View view, int position, boolean isLongClick) {
-                final Intent detail = new Intent(context, DetailArticle.class);
-                final Bundle bundle = new Bundle();
-                TinTuc tinTuc1 = tinTucs.get(position);
-                bundle.putInt("idNews", tinTuc1.getId_tin());
-                bundle.putString("Content",tinTuc1.getNoidung());
-                bundle.putString("Tieude", tinTuc1.getTieude());
-                apiService.getBinhLuanTheoMaTin("LayDanhSachBinhLuanTheoMa",tinTuc1.getId_tin()+"").enqueue(new Callback<List<BinhLuan>>() {
-                    @Override
-                    public void onResponse(Call<List<BinhLuan>> call, Response<List<BinhLuan>> response) {
-                        List<BinhLuan> binhLuanList = response.body();
-                        int size = binhLuanList.size();
-                        bundle.putInt("SizeBinhLuan",size);
-                        detail.putExtras(bundle);
-                        context.startActivity(detail);
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<BinhLuan>> call, Throwable t) {
-                        Log.d("kiemtra","Lỗi : Lấy Bình Luận " + t.getMessage().toString());
-                    }
-                });
-
-            }
-        });
+        viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+              Intent detail = new Intent(context, DetailArticle.class);
+              Bundle bundle = new Bundle();
+              bundle.putInt("idNews", tinTuc.getId_tin());
+              bundle.putString("Content",tinTuc.getNoidung());
+              bundle.putString("Tieude", tinTuc.getTieude());
+              bundle.putInt("SizeBinhLuan", numBinhLuan[0]);
+              detail.putExtras(bundle);
+              context.startActivity(detail);
+          }
+      });
     }
 
     @Override
@@ -133,13 +121,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         return tinTucs.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ItemClickListener itemClickListener;
+    public class ViewHolder extends RecyclerView.ViewHolder  {
         private ImageView image;
         private TextView title;
         private TextView time;
         private TextView numbercomment;
         private ImageView iconcomment;
+        private LinearLayout linearLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -148,17 +136,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             title = itemView.findViewById(R.id.title_article);
             numbercomment = itemView.findViewById(R.id.numbercomment);
             iconcomment = itemView.findViewById(R.id.iconcomment);
+            linearLayout = itemView.findViewById(R.id.layout_news);
 
-            itemView.setOnClickListener(this);
         }
 
-        public void setItemClickListener(ItemClickListener itemClickListener) {
-            this.itemClickListener = itemClickListener;
-        }
-
-        @Override
-        public void onClick(View v) {
-            itemClickListener.onClick(v, getAdapterPosition(), false);
-        }
     }
 }

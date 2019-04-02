@@ -20,6 +20,7 @@ import com.example.apptintuc.Api.ApiService;
 import com.example.apptintuc.GetDataBase.FromRepository;
 import com.example.apptintuc.Object.BinhLuan;
 import com.example.apptintuc.Object.EditTextInPut;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -93,6 +94,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
            @Override
            public void onResponse(Call<List<BinhLuan>> call, Response<List<BinhLuan>> response) {
                binhLuanList.addAll(response.body());
+               binhLuanList = Lists.reverse(binhLuanList);
                commentAdapter = new CommentAdapter(CommentActivity.this,binhLuanList);
                recyclerView.setAdapter(commentAdapter);
                recyclerView.setLayoutManager(new LinearLayoutManager(CommentActivity.this,LinearLayoutManager.VERTICAL,false));
@@ -112,28 +114,29 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.send_button:
-                String binhluan = input_binhluan.getText().toString();
+                final String binhluan = input_binhluan.getText().toString();
                 Calendar calendar = Calendar.getInstance();
-                java.sql.Date startDate = new java.sql.Date(calendar.getTime().getTime());
+                final java.sql.Date startDate = new java.sql.Date(calendar.getTime().getTime());
                 if(binhluan.length() ==0){
                     Toast.makeText(this, "Vui lòng không để trống ", Toast.LENGTH_SHORT).show();
                 }else {
-                    apiService.ThemBinhLuan("ThemBinhLuan", String.valueOf(id_new),"thanhquanqwer@gmail.com",startDate.toString(),"quanle",binhluan).enqueue(new Callback<List<BinhLuan>>() {
+                    apiService.ThemBinhLuan("ThemBinhLuan", String.valueOf(id_new),"thanhquanqwer@gmail.com",startDate.toString(),"quanle",binhluan).enqueue(new Callback<String>() {
                         @Override
-                        public void onResponse(Call<List<BinhLuan>> call, Response<List<BinhLuan>> response) {
-                            binhLuanList.clear();
-                            binhLuanList.addAll(response.body());
-                            commentAdapter.notifyDataSetChanged();
-                            swipeRefreshLayout.setRefreshing(false);
-                            if(binhLuanList.size()==0){
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            BinhLuan binhLuan = new BinhLuan("thanhquanqwer@gmail.com",startDate.toString(),binhluan,id_new,"quanle");
+                            if(response.body().equals("fail")){
                                 Toast.makeText(CommentActivity.this, "Bình luân thất bại", Toast.LENGTH_SHORT).show();
-                            }else {
+                            }else if(response.body().equals("success")) {
+                                binhLuanList.add(0,binhLuan);
+                                commentAdapter.notifyDataSetChanged();
+                                swipeRefreshLayout.setRefreshing(false);
                                 Toast.makeText(CommentActivity.this, "Bình luân thành công", Toast.LENGTH_SHORT).show();
+                                hideKeyboard(CommentActivity.this);
                             }
                         }
 
                         @Override
-                        public void onFailure(Call<List<BinhLuan>> call, Throwable t) {
+                        public void onFailure(Call<String> call, Throwable t) {
                             Log.d("kiemtra","Lỗi : Thêm Bình Luận " + t.getMessage());
                         }
                     });
@@ -142,6 +145,9 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.imageback:
                 hideKeyboard(this);
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("result",binhLuanList.size());
+                setResult(Activity.RESULT_OK,returnIntent);
                 finish();
                 break;
 
@@ -156,5 +162,13 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("result",binhLuanList.size());
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
     }
 }

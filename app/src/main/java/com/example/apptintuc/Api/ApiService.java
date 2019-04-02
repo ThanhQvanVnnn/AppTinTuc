@@ -29,7 +29,7 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST(" ")
-    Call<List<BinhLuan>> ThemBinhLuan(@Field("ham") String ham, @Field("maTin") String matin
+    Call<String> ThemBinhLuan(@Field("ham") String ham, @Field("maTin") String matin
             ,@Field("Email") String email,@Field("Date") String date
             ,@Field("idNguoiDung") String id,@Field("noiDung") String noidung);
 

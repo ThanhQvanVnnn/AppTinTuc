@@ -19,6 +19,14 @@ public class BinhLuan {
         this.id_user = id_user;
     }
 
+    public BinhLuan(String email, String thoigian, String noidung, int id_tin, String id_user) {
+        this.email = email;
+        this.thoigian = thoigian;
+        this.noidung = noidung;
+        this.id_tin = id_tin;
+        this.id_user = id_user;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
