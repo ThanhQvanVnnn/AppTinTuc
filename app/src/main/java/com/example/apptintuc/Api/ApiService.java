@@ -3,6 +3,7 @@ package com.example.apptintuc.Api;
 import com.example.apptintuc.Object.BinhLuan;
 import com.example.apptintuc.Object.DanhMuc;
 import com.example.apptintuc.Object.TinTuc;
+import com.example.apptintuc.Object.User;
 
 import java.sql.Date;
 import java.util.List;
@@ -31,4 +32,8 @@ public interface ApiService {
     Call<List<BinhLuan>> ThemBinhLuan(@Field("ham") String ham, @Field("maTin") String matin
             ,@Field("Email") String email,@Field("Date") String date
             ,@Field("idNguoiDung") String id,@Field("noiDung") String noidung);
+
+    @FormUrlEncoded
+    @POST(" ")
+    Call<User> LayUserTheoId(@Field("ham") String ham, @Field("idUser") String idUser);
 }

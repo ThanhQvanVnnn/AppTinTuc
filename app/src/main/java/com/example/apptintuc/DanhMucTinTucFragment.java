@@ -1,6 +1,7 @@
 package com.example.apptintuc;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,6 +40,7 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
     private NewsAdapter newsAdapter;
     private TinTuc tinTuc;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private AlertDialog dialog;
     String id_danhmuc;
 
     @Nullable
@@ -52,7 +54,7 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
             @Override
             public void onRefresh() {
                 tinTucs = new ArrayList<>();
-
+                swipeRefreshLayout.setRefreshing(true);
                 apiService.getTinTuc("LayDanhSachTinTuc",id_danhmuc).enqueue(new Callback<List<TinTuc>>() {
                     @Override
                     public void onResponse(Call<List<TinTuc>> call, Response<List<TinTuc>> response) {
@@ -60,9 +62,10 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
                         tinTuc = tinTucs.get(0);
                         Picasso.get().load(tinTuc.getImg()).into(kenBurnsView);
                         firstTitle.setText(tinTuc.getTieude());
-                        newsAdapter = new NewsAdapter(getContext(),tinTucs);
                         recyclerView.setAdapter(newsAdapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+                        newsAdapter.notifyDataSetChanged();
+                        swipeRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
@@ -80,6 +83,10 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
         recyclerView = view.findViewById(R.id.recycle_view);
         firstTitle = view.findViewById(R.id.title_article_first);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary)
+                ,getResources().getColor(R.color.colorPrimary)
+                ,getResources().getColor(R.color.colorPrimary));
+        dialog = new SpotsDialog(getContext());
         apiService = FromRepository.getApiService();
         tinTucs = new ArrayList<>();
 

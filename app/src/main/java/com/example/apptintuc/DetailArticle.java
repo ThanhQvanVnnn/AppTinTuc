@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,13 +52,13 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
     private LinearLayout topLayout;
     private ImageView imageView_back;
     private Button button_binhluan;
-    private RelativeLayout trangbinhluan;
     private ImageView luutrang;
     private EditTextInPut input_binhluan;
     private ImageButton button_submitBinhLuan;
     private TextView soluongbinhluan;
     private View layout_itconBinhLuan;
     private ApiService apiService;
+    private SwipeRefreshLayout swipeRefreshLayout;
     boolean show = false;
     int socomment;
 
@@ -67,6 +68,19 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_detail_article);
         firstInits();
         OnsCroll();
+       setNumberBinhLuan();
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                setWebView();
+                setNumberBinhLuan();
+            }
+        });
+    }
+
+    public void setNumberBinhLuan(){
         if(socomment==0){
             soluongbinhluan.setVisibility(View.GONE);
         }else soluongbinhluan.setText(socomment+"");
@@ -88,10 +102,12 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                 }
             }});
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.imageback:
+                hideKeyboard(this);
                 finish();
                 break;
             case R.id.button_input_comment:
@@ -110,13 +126,15 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                     apiService.ThemBinhLuan("ThemBinhLuan", String.valueOf(id_new),"thanhquanqwer@gmail.com",startDate.toString(),"quanle",binhluan).enqueue(new Callback<List<BinhLuan>>() {
                         @Override
                         public void onResponse(Call<List<BinhLuan>> call, Response<List<BinhLuan>> response) {
-                            List<BinhLuan> binhLuanList = response.body();
-                            if(binhLuanList.size()==0){
+
+                            if(response.body().size()==0){
                                 Toast.makeText(DetailArticle.this, "Bình luân thất bại", Toast.LENGTH_SHORT).show();
                             }else {
-                                soluongbinhluan.setText(binhLuanList.size()+"");
+                                soluongbinhluan.setText(response.body().size()+"");
                                 anEditBinhLuan();
                                 Toast.makeText(DetailArticle.this, "Bình luân thành công", Toast.LENGTH_SHORT).show();
+                                socomment = response.body().size();
+                                setNumberBinhLuan();
                             }
                         }
 
@@ -131,7 +149,10 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                 if(socomment == 0){
                     hienThiEditBinhLuan();
                 }else {
-
+                    Intent intent = new Intent(this,CommentActivity.class);
+                    intent.putExtra("title",tieude);
+                    intent.putExtra("maTin",id_new);
+                    startActivity(intent);
                 }
                 break;
         }
@@ -155,6 +176,7 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
         layout_itconBinhLuan.setVisibility(View.VISIBLE);
         input_binhluan.setVisibility(View.GONE);
         button_submitBinhLuan.setVisibility(View.GONE);
+        input_binhluan.setText("");
     }
 
     private void firstInits() {
@@ -166,13 +188,20 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
         topLayout = findViewById(R.id.tool_header);
         apiService = FromRepository.getApiService();
         button_binhluan = findViewById(R.id.button_input_comment);
-        trangbinhluan = findViewById(R.id.trangbinhluan);
         luutrang = findViewById(R.id.luutin);
         input_binhluan = findViewById(R.id.edittext_input_comment);
         button_submitBinhLuan = findViewById(R.id.send_button);
         soluongbinhluan = findViewById(R.id.number_binhluan);
         layout_itconBinhLuan = findViewById(R.id.layout_iconbinhluan);
+        swipeRefreshLayout = findViewById(R.id.swipedetail);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary)
+                ,getResources().getColor(R.color.colorPrimary)
+                ,getResources().getColor(R.color.colorPrimary));
 
+        setWebView();
+    }
+
+    private void setWebView() {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         dialog.show();
