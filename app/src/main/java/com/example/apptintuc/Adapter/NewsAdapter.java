@@ -48,7 +48,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     public NewsAdapter(Context context, List<TinTuc> tinTucs) {
         this.context = context;
         this.tinTucs = tinTucs;
-        tinTucs.remove(0);
         apiService = FromRepository.getApiService();
 
     }

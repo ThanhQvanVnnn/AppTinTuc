@@ -1,6 +1,7 @@
 package com.example.apptintuc;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
 
+//        toolbar.setT;
         dialog = new SpotsDialog(this);
         dialog.show();
         apiService = FromRepository.getApiService();
@@ -114,7 +116,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(this,TimKiemActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -126,21 +129,23 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.search) {
 
-        } else if (id == R.id.nav_slideshow) {
+            Intent intent = new Intent(this,TimKiemActivity.class);
+             startActivity(intent);
 
-        } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.luutin) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.logout) {
+
+        }else if (id == R.id.login) {
+
+        }else if (id == R.id.register) {
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

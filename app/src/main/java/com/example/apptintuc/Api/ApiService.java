@@ -36,4 +36,8 @@ public interface ApiService {
     @FormUrlEncoded
     @POST(" ")
     Call<User> LayUserTheoId(@Field("ham") String ham, @Field("idUser") String idUser);
+
+    @FormUrlEncoded
+    @POST(" ")
+    Call<List<TinTuc>> getTimKiem(@Field("ham") String ham, @Field("noidung") String noidung);
 }

@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -203,8 +204,19 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
         String style ="<style>img{display: inline;height: auto;max-width: 100%;}</style>";
         textTile.setText(tieude);
         webView.getSettings().setJavaScriptEnabled(true);
+        WebSettings webSettings = webView.getSettings();
+        webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        webView.getSettings().setAppCacheEnabled(true);
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+        webSettings.setUseWideViewPort(false);
+        webSettings.setSavePassword(true);
+        webSettings.setSaveFormData(true);
+
         imageView_back.setOnClickListener(this);
-        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+//        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.loadDataWithBaseURL(null,style + content, mime, encoding, null);
         webView.setWebViewClient(new WebViewClient(){
 
@@ -220,12 +232,12 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                 dialog.dismiss();
             }
         });
-        webView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
+//        webView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                return true;
+//            }
+//        });
     }
 
 

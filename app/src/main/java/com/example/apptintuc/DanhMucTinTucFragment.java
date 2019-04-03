@@ -37,6 +37,7 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
     private RecyclerView recyclerView;
     private TextView firstTitle;
     private List<TinTuc> tinTucs;
+    private List<TinTuc> tinTucsRecycler;
     private ApiService apiService;
     private NewsAdapter newsAdapter;
     private TinTuc tinTuc;
@@ -90,7 +91,7 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
         dialog = new SpotsDialog(getContext());
         apiService = FromRepository.getApiService();
         tinTucs = new ArrayList<>();
-
+        tinTucsRecycler = new ArrayList<>();
         apiService.getTinTuc("LayDanhSachTinTuc",id_danhmuc).enqueue(new Callback<List<TinTuc>>() {
             @Override
             public void onResponse(Call<List<TinTuc>> call, Response<List<TinTuc>> response) {
@@ -98,7 +99,9 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
                 tinTuc = tinTucs.get(0);
                 Picasso.get().load(tinTuc.getImg()).into(kenBurnsView);
                 firstTitle.setText(tinTuc.getTieude());
-                newsAdapter = new NewsAdapter(getContext(),tinTucs);
+                tinTucsRecycler = response.body();
+                tinTucsRecycler.remove(0);
+                newsAdapter = new NewsAdapter(getContext(),tinTucsRecycler);
                 recyclerView.setAdapter(newsAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
             }
