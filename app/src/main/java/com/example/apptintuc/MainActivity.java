@@ -127,11 +127,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        Intent intent;
         int id = item.getItemId();
 
         if (id == R.id.search) {
 
-            Intent intent = new Intent(this,TimKiemActivity.class);
+             intent = new Intent(this,TimKiemActivity.class);
              startActivity(intent);
 
 
@@ -140,9 +141,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.logout) {
 
         }else if (id == R.id.login) {
+            intent = new Intent(this,DangNhap.class);
+            startActivity(intent);
 
         }else if (id == R.id.register) {
-
+            intent = new Intent(this,DangKy.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

@@ -1,6 +1,5 @@
 package com.example.apptintuc;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,28 +9,29 @@ import android.widget.Button;
 import com.example.apptintuc.CustomView.CustomEditText;
 import com.example.apptintuc.CustomView.PassWordEditText;
 import com.example.apptintuc.Object.EditTextInPut;
+import com.example.apptintuc.R;
 
-public class DangNhap extends AppCompatActivity  implements View.OnClickListener {
+public class DangKy extends AppCompatActivity implements View.OnClickListener {
 
-    private CustomEditText editTextInPut_email;
-    private PassWordEditText passWordEditText_password;
-    private Button button_dangnhap,button_dangky;
+    private CustomEditText editTextInPut_email,editTextInPut_userName;
+    private PassWordEditText passWordEditText_pass,passWordEditText_repass;
+    private Button button_register;
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dang_nhap);
-        firstInits();
-        button_dangnhap.setOnClickListener(this);
-        button_dangky.setOnClickListener(this);
+        setContentView(R.layout.activity_dang_ky);
+        firstInit();
+        button_register.setOnClickListener(this);
     }
 
-    private void firstInits() {
+    private void firstInit() {
         editTextInPut_email = findViewById(R.id.email);
-        passWordEditText_password = findViewById(R.id.passWord);
-        button_dangnhap = findViewById(R.id.button_Login);
-        button_dangky = findViewById(R.id.button_register);
+        editTextInPut_userName = findViewById(R.id.userName);
+        passWordEditText_pass = findViewById(R.id.passWord);
+        passWordEditText_repass = findViewById(R.id.nhaplai_passWord);
+        button_register = findViewById(R.id.button_register);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -42,15 +42,12 @@ public class DangNhap extends AppCompatActivity  implements View.OnClickListener
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.button_Login:
-
-                break;
             case R.id.button_register:
-                Intent intent = new Intent(this,DangKy.class);
-                startActivity(intent);
+
                 break;
         }
     }
+
 
     @Override
     public boolean onSupportNavigateUp() {
