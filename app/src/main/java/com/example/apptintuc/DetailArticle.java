@@ -3,8 +3,10 @@ package com.example.apptintuc;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -120,48 +122,65 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                 finish();
                 break;
             case R.id.button_input_comment:
-               hienThiEditBinhLuan();
+                if(MainActivity.user!=null) {
+                    hienThiEditBinhLuan();
+                }else {
+                    Intent intent = new Intent(this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                    Toast.makeText(this, "Bạn cần đăng nhập để có thể bình luận", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.luutin:
 
                 break;
             case R.id.send_button:
-                String binhluan = input_binhluan.getText().toString();
-                Calendar calendar = Calendar.getInstance();
-                java.sql.Date startDate = new java.sql.Date(calendar.getTime().getTime());
-                if(binhluan.length() ==0){
-                    Toast.makeText(this, "Vui lòng không để trống ", Toast.LENGTH_SHORT).show();
-                }else {
-                    apiService.ThemBinhLuan("ThemBinhLuan", String.valueOf(id_new),"thanhquanqwer@gmail.com",startDate.toString(),"quanle",binhluan).enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
-                            final String trave = response.body();
 
-                            if (trave.equals("fail")) {
-                                Toast.makeText(DetailArticle.this, "Bình luân thất bại", Toast.LENGTH_SHORT).show();
-                            } else if (trave.equals("success")) {
-                                anEditBinhLuan();
-                                Toast.makeText(DetailArticle.this, "Bình luân thành công ", Toast.LENGTH_SHORT).show();
-                                socomment +=1;
-                                setNumberBinhLuan();
-                            }
-                        }
+                   String binhluan = input_binhluan.getText().toString();
+                   Calendar calendar = Calendar.getInstance();
+                   java.sql.Date startDate = new java.sql.Date(calendar.getTime().getTime());
+                   if (binhluan.length() == 0) {
+                       Toast.makeText(this, "Vui lòng không để trống ", Toast.LENGTH_SHORT).show();
+                   } else {
+                       apiService.ThemBinhLuan("ThemBinhLuan", String.valueOf(id_new), MainActivity.user.getEmail(), startDate.toString(), MainActivity.user.getId_user()+" ", binhluan).enqueue(new Callback<String>() {
+                           @Override
+                           public void onResponse(Call<String> call, Response<String> response) {
+                               final String trave = response.body();
 
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-                            Log.d("kiemtra","Lỗi : Thêm Bình Luận " + t.getMessage());
-                        }
-                    });
-                }
+                               if (trave.equals("fail")) {
+                                   Toast.makeText(DetailArticle.this, "Bình luân thất bại", Toast.LENGTH_SHORT).show();
+                               } else if (trave.equals("success")) {
+                                   anEditBinhLuan();
+                                   Toast.makeText(DetailArticle.this, "Bình luân thành công ", Toast.LENGTH_SHORT).show();
+                                   socomment += 1;
+                                   setNumberBinhLuan();
+                               }
+                           }
+
+                           @Override
+                           public void onFailure(Call<String> call, Throwable t) {
+                               Log.d("kiemtra", "Lỗi : Thêm Bình Luận " + t.getMessage());
+                           }
+                       });
+
+               }
                 break;
             case R.id.layout_iconbinhluan:
-                if(socomment == 0){
-                    hienThiEditBinhLuan();
-                }else {
-                    Intent intent = new Intent(this,CommentActivity.class);
-                    intent.putExtra("title",tieude);
-                    intent.putExtra("maTin",id_new);
-                    startActivityForResult(intent,1);
+
+                    if (socomment == 0) {
+                        if (MainActivity.user != null) {
+                            hienThiEditBinhLuan();
+                        } else {
+                            Toast.makeText(this, "Bạn cần đăng nhập để có thể bình luận", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(this,MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }else {
+                        Intent intent = new Intent(this, CommentActivity.class);
+                        intent.putExtra("title", tieude);
+                        intent.putExtra("maTin", id_new);
+                        startActivityForResult(intent, 1);
                 }
                 break;
         }

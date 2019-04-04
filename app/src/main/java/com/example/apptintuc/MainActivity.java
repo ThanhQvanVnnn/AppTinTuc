@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity
     private ApiService apiService;
     private TextView ten_user;
     AlertDialog dialog;
-    private User user;
+    public static User user;
     SharedPreferences mPrefs ;
     View header ;
     @Override

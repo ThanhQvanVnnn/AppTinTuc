@@ -114,33 +114,40 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.send_button:
-                final String binhluan = input_binhluan.getText().toString();
-                Calendar calendar = Calendar.getInstance();
-                final java.sql.Date startDate = new java.sql.Date(calendar.getTime().getTime());
-                if(binhluan.length() ==0){
-                    Toast.makeText(this, "Vui lòng không để trống ", Toast.LENGTH_SHORT).show();
-                }else {
-                    apiService.ThemBinhLuan("ThemBinhLuan", String.valueOf(id_new),"thanhquanqwer@gmail.com",startDate.toString(),"quanle",binhluan).enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
-                            BinhLuan binhLuan = new BinhLuan("thanhquanqwer@gmail.com",startDate.toString(),binhluan,id_new,"quanle");
-                            if(response.body().equals("fail")){
-                                Toast.makeText(CommentActivity.this, "Bình luân thất bại", Toast.LENGTH_SHORT).show();
-                            }else if(response.body().equals("success")) {
-                                binhLuanList.add(0,binhLuan);
-                                commentAdapter.notifyDataSetChanged();
-                                swipeRefreshLayout.setRefreshing(false);
-                                Toast.makeText(CommentActivity.this, "Bình luân thành công", Toast.LENGTH_SHORT).show();
-                                hideKeyboard(CommentActivity.this);
+                if(MainActivity.user!=null) {
+                    final String binhluan = input_binhluan.getText().toString();
+                    Calendar calendar = Calendar.getInstance();
+                    final java.sql.Date startDate = new java.sql.Date(calendar.getTime().getTime());
+                    if (binhluan.length() == 0) {
+                        Toast.makeText(this, "Vui lòng không để trống ", Toast.LENGTH_SHORT).show();
+                    } else {
+                        apiService.ThemBinhLuan("ThemBinhLuan", String.valueOf(id_new), "thanhquanqwer@gmail.com", startDate.toString(), "quanle", binhluan).enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                BinhLuan binhLuan = new BinhLuan("thanhquanqwer@gmail.com", startDate.toString(), binhluan, id_new, "quanle");
+                                if (response.body().equals("fail")) {
+                                    Toast.makeText(CommentActivity.this, "Bình luân thất bại", Toast.LENGTH_SHORT).show();
+                                } else if (response.body().equals("success")) {
+                                    binhLuanList.add(0, binhLuan);
+                                    commentAdapter.notifyDataSetChanged();
+                                    swipeRefreshLayout.setRefreshing(false);
+                                    Toast.makeText(CommentActivity.this, "Bình luân thành công", Toast.LENGTH_SHORT).show();
+                                    hideKeyboard(CommentActivity.this);
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-                            Log.d("kiemtra","Lỗi : Thêm Bình Luận " + t.getMessage());
-                        }
-                    });
-                    input_binhluan.setText("");
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                Log.d("kiemtra", "Lỗi : Thêm Bình Luận " + t.getMessage());
+                            }
+                        });
+                        input_binhluan.setText("");
+                    }
+                }else {
+                    Toast.makeText(this, "Bạn cần đăng nhập để bình luận", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
                 break;
             case R.id.imageback:

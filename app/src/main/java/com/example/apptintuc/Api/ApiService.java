@@ -44,4 +44,9 @@ public interface ApiService {
     @FormUrlEncoded
     @POST(" ")
     Call<User> getUser(@Field("ham") String ham, @Field("email") String email, @Field("password") String password);
+
+    @FormUrlEncoded
+    @POST(" ")
+    Call<String> themUser(@Field("ham") String ham, @Field("email") String email,
+                        @Field("password") String password,@Field("username") String username,@Field("sdt") String sdt);
 }

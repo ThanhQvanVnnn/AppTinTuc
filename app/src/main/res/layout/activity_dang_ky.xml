@@ -48,6 +48,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:singleLine="true"
+            android:inputType="textEmailAddress"
             android:hint="Nhập email"
             android:textSize="15sp" />
     </android.support.design.widget.TextInputLayout>
@@ -72,6 +73,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:singleLine="true"
+            android:inputType="text"
             android:hint="Nhập username"
             android:textSize="15sp" />
     </android.support.design.widget.TextInputLayout>
@@ -98,6 +100,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:singleLine="true"
+            android:inputType="textPassword"
             android:textSize="15sp"
             app:useStrike="true" />
     </android.support.design.widget.TextInputLayout>
@@ -123,6 +126,7 @@
             android:layout_marginRight="10dp"
             android:singleLine="true"
             android:textSize="15sp"
+            android:inputType="textPassword"
             app:useStrike="true" />
     </android.support.design.widget.TextInputLayout>
 
@@ -146,6 +150,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:singleLine="true"
+            android:inputType="phone"
             android:hint="Nhập số điện thoại"
             android:textSize="15sp" />
     </android.support.design.widget.TextInputLayout>

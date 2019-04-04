@@ -1,17 +1,26 @@
 package com.example.apptintuc;
 
+import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.example.apptintuc.Api.ApiService;
 import com.example.apptintuc.CustomView.CustomEditText;
 import com.example.apptintuc.CustomView.PassWordEditText;
+import com.example.apptintuc.GetDataBase.FromRepository;
 import com.example.apptintuc.Object.EditTextInPut;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DangKy extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
@@ -21,6 +30,7 @@ public class DangKy extends AppCompatActivity implements View.OnClickListener, V
             ,editTextInPut_sdt;
     private Button button_register;
     private Toolbar toolbar;
+    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +56,7 @@ public class DangKy extends AppCompatActivity implements View.OnClickListener, V
         editTextInPut_matkhau = findViewById(R.id.edittextinput_matkhau);
         editTextInPut_nhaplaimatkhau = findViewById(R.id.edittextinput_nhaplaimatkhau);
         editTextInPut_sdt = findViewById(R.id.edittextinput_sodienthoai);
+        apiService = FromRepository.getApiService();
 
         button_register = findViewById(R.id.button_register);
         toolbar = findViewById(R.id.toolbar);
@@ -59,7 +70,29 @@ public class DangKy extends AppCompatActivity implements View.OnClickListener, V
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button_register:
+                String email = customEditText_email.getText().toString().trim();
+                String userName = customEditText_userName.getText().toString().trim();
+                String sdt = customEditText_sdt.getText().toString().trim();
+                String pass = passWordEditText_pass.getText().toString().trim();
+                apiService.themUser("DangKy",email,pass,userName,sdt).enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        String result = response.body();
+                        if(result.equals("success")){
+                            Toast.makeText(DangKy.this, "Đăng kí thành công", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(DangKy.this,MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }else if(result.equals("fail")){
+                            Toast.makeText(DangKy.this, "Đăng kí thất bại", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.d("kiemtra","đăng kí "+t.getMessage());
+                    }
+                });
                 break;
         }
     }

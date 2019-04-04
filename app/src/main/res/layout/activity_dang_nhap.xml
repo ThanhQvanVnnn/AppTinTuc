@@ -59,6 +59,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:singleLine="true"
+            android:inputType="textEmailAddress"
             android:hint="Nhập email"
             android:textSize="15sp" />
     </android.support.design.widget.TextInputLayout>
@@ -84,6 +85,7 @@
             android:hint="Nhập mật khẩu"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:inputType="textPassword"
             android:singleLine="true"
             android:textSize="15sp"
             app:useStrike="true" />
