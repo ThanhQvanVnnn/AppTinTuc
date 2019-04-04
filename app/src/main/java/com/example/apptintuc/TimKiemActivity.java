@@ -1,5 +1,6 @@
 package com.example.apptintuc;
 
+import android.app.AlertDialog;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,7 @@ import com.example.apptintuc.Object.TinTuc;
 import java.util.ArrayList;
 import java.util.List;
 
+import dmax.dialog.SpotsDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,6 +39,7 @@ public class TimKiemActivity extends AppCompatActivity implements SearchView.OnQ
     private NewsAdapter newsAdapter;
     private ApiService apiService;
     private TextView khongtimthay;
+    private AlertDialog dialog;
     String texttimkiem;
 
     @Override
@@ -57,6 +60,7 @@ public class TimKiemActivity extends AppCompatActivity implements SearchView.OnQ
                     @Override
                     public void onResponse(Call<List<TinTuc>> call, Response<List<TinTuc>> response) {
                         if(response.body().size()!=0) {
+                            tinTucs.clear();
                             tinTucs.addAll(response.body());
                             newsAdapter.notifyDataSetChanged();
                             khongtimthay.setVisibility(View.GONE);
@@ -87,6 +91,7 @@ public class TimKiemActivity extends AppCompatActivity implements SearchView.OnQ
                 ,getResources().getColor(R.color.colorPrimary));
         recyclerView = findViewById(R.id.recyclerview);
         khongtimthay = findViewById(R.id.khongtimthay);
+        dialog = new SpotsDialog(this);
         tinTucs = new ArrayList<>();
         apiService = FromRepository.getApiService();
         newsAdapter = new NewsAdapter(TimKiemActivity.this, tinTucs);
@@ -108,10 +113,12 @@ public class TimKiemActivity extends AppCompatActivity implements SearchView.OnQ
     @Override
     public boolean onQueryTextSubmit(String s) {
         texttimkiem = s;
+        dialog.show();
         apiService.getTimKiem("getTimKiem",s).enqueue(new Callback<List<TinTuc>>() {
             @Override
             public void onResponse(Call<List<TinTuc>> call, Response<List<TinTuc>> response) {
                 if(response.body().size()!=0) {
+                    tinTucs.clear();
                     tinTucs.addAll(response.body());
                     newsAdapter.notifyDataSetChanged();
                     khongtimthay.setVisibility(View.GONE);
@@ -122,6 +129,7 @@ public class TimKiemActivity extends AppCompatActivity implements SearchView.OnQ
                     khongtimthay.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                 }
+                dialog.dismiss();
             }
 
             @Override

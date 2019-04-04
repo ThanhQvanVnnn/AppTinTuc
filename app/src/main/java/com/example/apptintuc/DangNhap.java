@@ -1,23 +1,40 @@
 package com.example.apptintuc;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.example.apptintuc.Api.ApiService;
 import com.example.apptintuc.CustomView.CustomEditText;
 import com.example.apptintuc.CustomView.PassWordEditText;
+import com.example.apptintuc.GetDataBase.FromRepository;
 import com.example.apptintuc.Object.EditTextInPut;
+import com.example.apptintuc.Object.User;
+import com.google.gson.Gson;
 
-public class DangNhap extends AppCompatActivity  implements View.OnClickListener {
+import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class DangNhap extends AppCompatActivity  implements View.OnClickListener, View.OnFocusChangeListener {
 
     private CustomEditText editTextInPut_email;
     private PassWordEditText passWordEditText_password;
     private Button button_dangnhap,button_dangky;
     private Toolbar toolbar;
-
+    private TextInputLayout textInputLayout_email,textInputLayout_pass,textInputLayout_kiemtradangnhap;
+    private ApiService apiService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +50,10 @@ public class DangNhap extends AppCompatActivity  implements View.OnClickListener
         button_dangnhap = findViewById(R.id.button_Login);
         button_dangky = findViewById(R.id.button_register);
         toolbar = findViewById(R.id.toolbar);
+        textInputLayout_email = findViewById(R.id.inputNhapEmail);
+        textInputLayout_pass = findViewById(R.id.inputNhapPass);
+        textInputLayout_kiemtradangnhap = findViewById(R.id.inputKiemtradangnhap);
+        apiService = FromRepository.getApiService();
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -43,7 +64,30 @@ public class DangNhap extends AppCompatActivity  implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button_Login:
+                String email = editTextInPut_email.getText().toString().trim();
+                String password = passWordEditText_password.getText().toString().trim();
+                apiService.getUser("DangNhap",email,password).enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+                        User myObject = response.body();
+                        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(myObject);
+                        prefsEditor.putString("MyObject", json);
+                        prefsEditor.commit();
+                        Toast.makeText(DangNhap.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("result","ok");
+                        setResult(Activity.RESULT_OK,returnIntent);
+                        finish();
+                    }
 
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+
+                    }
+                });
                 break;
             case R.id.button_register:
                 Intent intent = new Intent(this,DangKy.class);
@@ -56,5 +100,38 @@ public class DangNhap extends AppCompatActivity  implements View.OnClickListener
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        String chuoi;
+        switch (v.getId()){
+            case R.id.email:
+                 chuoi = ((EditText) v).getText().toString();
+                Boolean kiemtra = Patterns.EMAIL_ADDRESS.matcher(chuoi).matches();
+                if(chuoi.trim().equals("")){
+                    textInputLayout_email.setErrorEnabled(true);
+                    textInputLayout_email.setError("Vui lòng không bỏ trống");
+                }else if(!kiemtra){
+                    textInputLayout_email.setErrorEnabled(true);
+                    textInputLayout_email.setError("Địa chỉ email sai");
+                }else {
+                    textInputLayout_email.setErrorEnabled(false);
+                    textInputLayout_email.setError("");
+                }
+
+                break;
+
+            case R.id.inputNhapPass:
+                 chuoi = ((EditText) v).getText().toString();
+                if(chuoi.trim().equals("")) {
+                    textInputLayout_pass.setErrorEnabled(true);
+                    textInputLayout_pass.setError("Vui lòng không bỏ trống");
+                }else {
+                    textInputLayout_pass.setErrorEnabled(false);
+                    textInputLayout_pass.setError("");
+                }
+                break;
+        }
     }
 }

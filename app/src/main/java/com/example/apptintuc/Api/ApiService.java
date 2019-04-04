@@ -40,4 +40,8 @@ public interface ApiService {
     @FormUrlEncoded
     @POST(" ")
     Call<List<TinTuc>> getTimKiem(@Field("ham") String ham, @Field("noidung") String noidung);
+
+    @FormUrlEncoded
+    @POST(" ")
+    Call<User> getUser(@Field("ham") String ham, @Field("email") String email, @Field("password") String password);
 }

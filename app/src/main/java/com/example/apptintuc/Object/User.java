@@ -19,6 +19,9 @@ public class User {
         this.capquyen = capquyen;
     }
 
+    public User() {
+    }
+
     public String getId_user() {
         return id_user;
     }

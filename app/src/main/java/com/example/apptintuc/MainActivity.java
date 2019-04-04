@@ -1,8 +1,10 @@
 package com.example.apptintuc;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity
     private TabLayout tabLayout;
     private ApiService apiService;
     AlertDialog dialog;
+    Menu menu;
+    MenuItem item_login,item_register,item_logout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,9 +105,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menuu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        menu = menuu;
+        getMenuInflater().inflate(R.menu.main, menuu);
+        item_login = menu.findItem(R.id.login);
+        item_register = menu.findItem(R.id.login);
+        item_logout = menu.findItem(R.id.logout);
         return true;
     }
 
@@ -142,7 +150,7 @@ public class MainActivity extends AppCompatActivity
 
         }else if (id == R.id.login) {
             intent = new Intent(this,DangNhap.class);
-            startActivity(intent);
+            startActivityForResult(intent,1);
 
         }else if (id == R.id.register) {
             intent = new Intent(this,DangKy.class);
@@ -152,5 +160,22 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String result=data.getStringExtra("result");
+                if(result.equals("ok")) {
+                    item_login.setVisible(false);
+                    item_register.setVisible(false);
+                    item_logout.setVisible(true);
+                }
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
     }
 }
