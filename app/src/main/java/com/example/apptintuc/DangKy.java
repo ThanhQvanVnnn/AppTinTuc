@@ -1,20 +1,24 @@
 package com.example.apptintuc;
 
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.apptintuc.CustomView.CustomEditText;
 import com.example.apptintuc.CustomView.PassWordEditText;
 import com.example.apptintuc.Object.EditTextInPut;
-import com.example.apptintuc.R;
 
-public class DangKy extends AppCompatActivity implements View.OnClickListener {
+public class DangKy extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
-    private CustomEditText editTextInPut_email,editTextInPut_userName;
+    private CustomEditText customEditText_email,customEditText_userName,customEditText_sdt;
     private PassWordEditText passWordEditText_pass,passWordEditText_repass;
+    private TextInputLayout editTextInPut_userName,editTextInPut_email,editTextInPut_matkhau,editTextInPut_nhaplaimatkhau
+            ,editTextInPut_sdt;
     private Button button_register;
     private Toolbar toolbar;
 
@@ -24,13 +28,25 @@ public class DangKy extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_dang_ky);
         firstInit();
         button_register.setOnClickListener(this);
+        customEditText_userName.setOnFocusChangeListener(this);
+        customEditText_email.setOnFocusChangeListener(this);
+        passWordEditText_repass.setOnFocusChangeListener(this);
+        customEditText_sdt.setOnFocusChangeListener(this);
+        passWordEditText_pass.setOnFocusChangeListener(this);
     }
 
     private void firstInit() {
-        editTextInPut_email = findViewById(R.id.email);
-        editTextInPut_userName = findViewById(R.id.userName);
+        customEditText_email = findViewById(R.id.email);
+        customEditText_userName = findViewById(R.id.userName);
+        customEditText_sdt = findViewById(R.id.sdt);
         passWordEditText_pass = findViewById(R.id.passWord);
         passWordEditText_repass = findViewById(R.id.nhaplai_passWord);
+        editTextInPut_userName = findViewById(R.id.edittextinputuserName);
+        editTextInPut_email = findViewById(R.id.edittextinput_email);
+        editTextInPut_matkhau = findViewById(R.id.edittextinput_matkhau);
+        editTextInPut_nhaplaimatkhau = findViewById(R.id.edittextinput_nhaplaimatkhau);
+        editTextInPut_sdt = findViewById(R.id.edittextinput_sodienthoai);
+
         button_register = findViewById(R.id.button_register);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -53,5 +69,76 @@ public class DangKy extends AppCompatActivity implements View.OnClickListener {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        int id = v.getId();
+        String chuoi;
+        if(!hasFocus){
+            chuoi = ((EditText) v).getText().toString();
+            switch (id){
+                case R.id.email:
+                    Boolean kiemtra = Patterns.EMAIL_ADDRESS.matcher(chuoi).matches();
+                    if (chuoi.trim().equals("")) {
+                        editTextInPut_email.setErrorEnabled(true);
+                        editTextInPut_email.setError("Vui lòng không bỏ trống");
+                    } else if (!kiemtra) {
+                        editTextInPut_email.setErrorEnabled(true);
+                        editTextInPut_email.setError("Địa chỉ email sai");
+                    } else {
+                        editTextInPut_email.setErrorEnabled(false);
+                        editTextInPut_email.setError("");
+                    }
+                    break;
+                case R.id.userName:
+                    chuoi = ((EditText) v).getText().toString();
+                        if (chuoi.trim().equals("")) {
+                            editTextInPut_userName.setErrorEnabled(true);
+                            editTextInPut_userName.setError("Vui lòng không bỏ trống");
+                        } else {
+                            editTextInPut_userName.setErrorEnabled(false);
+                            editTextInPut_userName.setError("");
+                        }
+
+                    break;
+                case R.id.sdt:
+                    chuoi = ((EditText) v).getText().toString();
+                        if (chuoi.trim().equals("")) {
+                            editTextInPut_sdt.setErrorEnabled(true);
+                            editTextInPut_sdt.setError("Vui lòng không bỏ trống");
+                        } else {
+                            editTextInPut_sdt.setErrorEnabled(false);
+                            editTextInPut_sdt.setError("");
+                        }
+
+                    break;
+                case R.id.passWord:
+                    chuoi = ((EditText) v).getText().toString().trim();
+                        if (chuoi.trim().equals("")) {
+                            editTextInPut_matkhau.setErrorEnabled(true);
+                            editTextInPut_matkhau.setError("Vui lòng không bỏ trống");
+                        } else {
+                            editTextInPut_matkhau.setErrorEnabled(false);
+                            editTextInPut_matkhau.setError("");
+                        }
+
+                    break;
+                case R.id.nhaplai_passWord:
+                   String chuoi1 = passWordEditText_pass.getText().toString().trim();
+                    chuoi = ((EditText) v).getText().toString().trim();
+                    if (chuoi.trim().equals("")) {
+                        editTextInPut_nhaplaimatkhau.setErrorEnabled(true);
+                        editTextInPut_nhaplaimatkhau.setError("Vui lòng không bỏ trống");
+                    }else if(!chuoi1.equals(chuoi)){
+                        editTextInPut_nhaplaimatkhau.setErrorEnabled(true);
+                        editTextInPut_nhaplaimatkhau.setError("Mật khẩu nhập lại không đúng");
+                    }else {
+                        editTextInPut_nhaplaimatkhau.setErrorEnabled(false);
+                        editTextInPut_nhaplaimatkhau.setError("");
+                    }
+                    break;
+            }
+        }
     }
 }

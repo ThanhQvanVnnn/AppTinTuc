@@ -10,18 +10,15 @@
     <android.support.design.widget.AppBarLayout
         android:background="@android:color/transparent"
         android:layout_width="match_parent"
-        android:layout_marginBottom="50dp"
         android:layout_height="wrap_content">
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize">
-
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
     <TextView
-        android:layout_marginTop="20dp"
         android:layout_gravity="center"
         android:textAllCaps="true"
         android:textSize="30sp"
@@ -32,10 +29,12 @@
         android:layout_height="wrap_content" />
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/edittextinput_email"
         android:layout_gravity="center"
-        android:background="@drawable/background_edittext_login"
+        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
+        android:gravity="center"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
@@ -45,25 +44,23 @@
             android:id="@+id/email"
             android:background="@android:color/transparent"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
             android:singleLine="true"
             android:hint="Nhập email"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:textSize="15sp" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/edittextinputuserName"
         android:layout_gravity="center"
-        android:background="@drawable/background_edittext_login"
+        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:gravity="center"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp">
 
@@ -71,15 +68,11 @@
             android:id="@+id/userName"
             android:background="@android:color/transparent"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
             android:singleLine="true"
             android:hint="Nhập username"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:textSize="15sp" />
     </android.support.design.widget.TextInputLayout>
 
@@ -88,9 +81,11 @@
         android:layout_gravity="center"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/background_edittext_login"
+        android:gravity="center"
+        android:background="@color/white"
+        android:id="@+id/edittextinput_matkhau"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp">
 
@@ -98,14 +93,10 @@
             android:id="@+id/passWord"
             android:background="@android:color/transparent"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:hint="Nhập mật khẩu"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
             android:singleLine="true"
             android:textSize="15sp"
             app:useStrike="true" />
@@ -113,10 +104,12 @@
     <android.support.design.widget.TextInputLayout
         android:layout_gravity="center"
         android:layout_marginLeft="10dp"
+        android:id="@+id/edittextinput_nhaplaimatkhau"
         android:layout_marginRight="10dp"
-        android:background="@drawable/background_edittext_login"
+        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_height="70dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp">
 
@@ -124,17 +117,37 @@
             android:id="@+id/nhaplai_passWord"
             android:background="@android:color/transparent"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:hint="Nhập lại mật khẩu"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
             android:singleLine="true"
             android:textSize="15sp"
             app:useStrike="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_gravity="center"
+        android:background="@color/white"
+        android:gravity="center"
+        android:id="@+id/edittextinput_sodienthoai"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+
+        <com.example.apptintuc.CustomView.CustomEditText
+            android:id="@+id/sdt"
+            android:background="@android:color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:singleLine="true"
+            android:hint="Nhập số điện thoại"
+            android:textSize="15sp" />
     </android.support.design.widget.TextInputLayout>
 
     <Button

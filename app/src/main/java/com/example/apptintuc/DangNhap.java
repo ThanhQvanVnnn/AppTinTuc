@@ -1,12 +1,15 @@
 package com.example.apptintuc;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +26,7 @@ import com.google.gson.Gson;
 
 import java.util.regex.Pattern;
 
+import dmax.dialog.SpotsDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,6 +39,7 @@ public class DangNhap extends AppCompatActivity  implements View.OnClickListener
     private Toolbar toolbar;
     private TextInputLayout textInputLayout_email,textInputLayout_pass,textInputLayout_kiemtradangnhap;
     private ApiService apiService;
+    private AlertDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +47,8 @@ public class DangNhap extends AppCompatActivity  implements View.OnClickListener
         firstInits();
         button_dangnhap.setOnClickListener(this);
         button_dangky.setOnClickListener(this);
+        editTextInPut_email.setOnFocusChangeListener(this);
+        passWordEditText_password.setOnFocusChangeListener(this);
     }
 
     private void firstInits() {
@@ -54,6 +61,7 @@ public class DangNhap extends AppCompatActivity  implements View.OnClickListener
         textInputLayout_pass = findViewById(R.id.inputNhapPass);
         textInputLayout_kiemtradangnhap = findViewById(R.id.inputKiemtradangnhap);
         apiService = FromRepository.getApiService();
+        dialog = new SpotsDialog(this);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,28 +72,30 @@ public class DangNhap extends AppCompatActivity  implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button_Login:
+                dialog.show();
                 String email = editTextInPut_email.getText().toString().trim();
                 String password = passWordEditText_password.getText().toString().trim();
                 apiService.getUser("DangNhap",email,password).enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
-                        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+                        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(DangNhap.this);
                         User myObject = response.body();
                         SharedPreferences.Editor prefsEditor = mPrefs.edit();
                         Gson gson = new Gson();
                         String json = gson.toJson(myObject);
-                        prefsEditor.putString("MyObject", json);
+                        prefsEditor.putString("user", json);
                         prefsEditor.commit();
                         Toast.makeText(DangNhap.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                         Intent returnIntent = new Intent();
-                        returnIntent.putExtra("result","ok");
-                        setResult(Activity.RESULT_OK,returnIntent);
+                        setResult(Activity.RESULT_CANCELED, returnIntent);
                         finish();
+                        dialog.dismiss();
                     }
 
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
-
+                        dialog.dismiss();
+                        Toast.makeText(DangNhap.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;
@@ -105,31 +115,35 @@ public class DangNhap extends AppCompatActivity  implements View.OnClickListener
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         String chuoi;
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.email:
-                 chuoi = ((EditText) v).getText().toString();
-                Boolean kiemtra = Patterns.EMAIL_ADDRESS.matcher(chuoi).matches();
-                if(chuoi.trim().equals("")){
-                    textInputLayout_email.setErrorEnabled(true);
-                    textInputLayout_email.setError("Vui lòng không bỏ trống");
-                }else if(!kiemtra){
-                    textInputLayout_email.setErrorEnabled(true);
-                    textInputLayout_email.setError("Địa chỉ email sai");
-                }else {
-                    textInputLayout_email.setErrorEnabled(false);
-                    textInputLayout_email.setError("");
+                if (!hasFocus) {
+                    chuoi = ((EditText) v).getText().toString();
+                    Boolean kiemtra = Patterns.EMAIL_ADDRESS.matcher(chuoi).matches();
+                    if (chuoi.trim().equals("")) {
+                        textInputLayout_email.setErrorEnabled(true);
+                        textInputLayout_email.setError("Vui lòng không bỏ trống");
+                    } else if (!kiemtra) {
+                        textInputLayout_email.setErrorEnabled(true);
+                        textInputLayout_email.setError("Địa chỉ email sai");
+                    } else {
+                        textInputLayout_email.setErrorEnabled(false);
+                        textInputLayout_email.setError("");
+                    }
                 }
 
                 break;
 
-            case R.id.inputNhapPass:
-                 chuoi = ((EditText) v).getText().toString();
-                if(chuoi.trim().equals("")) {
-                    textInputLayout_pass.setErrorEnabled(true);
-                    textInputLayout_pass.setError("Vui lòng không bỏ trống");
-                }else {
-                    textInputLayout_pass.setErrorEnabled(false);
-                    textInputLayout_pass.setError("");
+            case R.id.passWord:
+                chuoi = ((EditText) v).getText().toString();
+                if (!hasFocus) {
+                    if (chuoi.trim().equals("")) {
+                        textInputLayout_pass.setErrorEnabled(true);
+                        textInputLayout_pass.setError("Vui lòng không bỏ trống");
+                    } else {
+                        textInputLayout_pass.setErrorEnabled(false);
+                        textInputLayout_pass.setError("");
+                    }
                 }
                 break;
         }
