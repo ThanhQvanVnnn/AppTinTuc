@@ -142,4 +142,26 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
                 break;
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        apiService.getTinTuc("LayDanhSachTinTuc",id_danhmuc).enqueue(new Callback<List<TinTuc>>() {
+            @Override
+            public void onResponse(Call<List<TinTuc>> call, Response<List<TinTuc>> response) {
+                tinTucs.addAll(response.body());
+                tinTuc = tinTucs.get(0);
+                Picasso.get().load(tinTuc.getImg()).into(kenBurnsView);
+                firstTitle.setText(tinTuc.getTieude());
+                recyclerView.setAdapter(newsAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+            }
+
+            @Override
+            public void onFailure(Call<List<TinTuc>> call, Throwable t) {
+                Log.d("kiemtra","Lỗi :"+t.getMessage().toString());
+            }
+        });
+
+    }
 }

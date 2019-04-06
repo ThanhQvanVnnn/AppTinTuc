@@ -208,4 +208,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Gson gson = new Gson();
+        String json = mPrefs.getString("user", "");
+        user = gson.fromJson(json, User.class);
+        LayThongTinUser();
+
+    }
 }

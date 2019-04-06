@@ -80,7 +80,7 @@ public class DangKy extends AppCompatActivity implements View.OnClickListener, V
                         String result = response.body();
                         if(result.equals("success")){
                             Toast.makeText(DangKy.this, "Đăng kí thành công", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(DangKy.this,MainActivity.class);
+                            Intent intent = new Intent(DangKy.this,DangNhap.class);
                             startActivity(intent);
                             finish();
                         }else if(result.equals("fail")){

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapRegionDecoder;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -65,6 +66,8 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
     private SwipeRefreshLayout swipeRefreshLayout;
     boolean show = false;
     int socomment;
+    private final int REQUESTCODE_BINHLUAN = 1;
+    private final int REQUESTCODE_DANGKY = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,9 +128,8 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                 if(MainActivity.user!=null) {
                     hienThiEditBinhLuan();
                 }else {
-                    Intent intent = new Intent(this,MainActivity.class);
+                    Intent intent = new Intent(this,DangNhap.class);
                     startActivity(intent);
-                    finish();
                     Toast.makeText(this, "Bạn cần đăng nhập để có thể bình luận", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -172,15 +174,14 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                             hienThiEditBinhLuan();
                         } else {
                             Toast.makeText(this, "Bạn cần đăng nhập để có thể bình luận", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(this,MainActivity.class);
+                            Intent intent = new Intent(this,DangNhap.class);
                             startActivity(intent);
-                            finish();
                         }
                     }else {
                         Intent intent = new Intent(this, CommentActivity.class);
                         intent.putExtra("title", tieude);
                         intent.putExtra("maTin", id_new);
-                        startActivityForResult(intent, 1);
+                        startActivityForResult(intent, REQUESTCODE_BINHLUAN);
                 }
                 break;
         }
@@ -364,15 +365,27 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
-                int result=data.getIntExtra("result",-100);
-                socomment = result;
-                setNumberBinhLuan();
+
+            switch (requestCode){
+                case REQUESTCODE_BINHLUAN:
+                    if(resultCode == Activity.RESULT_OK){
+                        int result=data.getIntExtra("result",-100);
+                        socomment = result;
+                        setNumberBinhLuan();
+                    }
+                    if (resultCode == Activity.RESULT_CANCELED) {
+                        //Write your code if there's no result
+                    }
+                    break;
+
+                case REQUESTCODE_DANGKY:
+                    if(resultCode == Activity.RESULT_OK){
+                    }
+                    if (resultCode == Activity.RESULT_CANCELED) {
+
+                    }
+                    break;
             }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
-            }
-        }
+
     }
 }

@@ -89,6 +89,7 @@ public class DangNhap extends AppCompatActivity  implements View.OnClickListener
                         Intent returnIntent = new Intent();
                         setResult(Activity.RESULT_CANCELED, returnIntent);
                         finish();
+                        MainActivity.user = myObject;
                         dialog.dismiss();
                     }
 

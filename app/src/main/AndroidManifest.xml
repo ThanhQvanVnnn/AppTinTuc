@@ -11,12 +11,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DangKy"
-            android:windowSoftInputMode="stateVisible|adjustPan"/>
-        <activity android:name=".DangNhap"
-            android:windowSoftInputMode="stateVisible|adjustPan"/>
-        <activity android:name=".TimKiemActivity"
-            android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".LuuTin"></activity>
+        <activity
+            android:name=".DangKy"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity
+            android:name=".DangNhap"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity
+            android:name=".TimKiemActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".CommentActivity"
             android:windowSoftInputMode="adjustResize" />

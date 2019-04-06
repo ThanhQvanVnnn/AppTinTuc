@@ -1,18 +1,36 @@
 package com.example.apptintuc.Object;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 import java.util.Date;
 
+import retrofit2.http.Field;
+
+@Entity(tableName = "tin_tuc")
 public class TinTuc {
+    @PrimaryKey(autoGenerate = true)
     private int id_tin;
+    @ColumnInfo(name = "tieu_de")
     private String tieude;
+    @ColumnInfo(name = "mo_ta")
     private String mota;
+    @ColumnInfo(name = "img")
     private String img;
+    @ColumnInfo(name = "noi_dung")
     private String noidung;
+    @ColumnInfo(name = "ngay_dang_tin")
     private String ngaydangtin;
+    @ColumnInfo(name = "tac_gia")
     private String tacgia;
+    @ColumnInfo(name = "so_lan_xem")
     private int solanxem;
+    @ColumnInfo(name = "tin_hot")
     private int tinhot;
+    @ColumnInfo(name = "trang_thai")
     private int trangthai;
+    @ColumnInfo(name = "id_loaitin")
     private String id_loaitin;
 
     public TinTuc(int id_tin, String tieude, String mota, String img, String noidung, String ngaydangtin, String tacgia, int solanxem, int tinhot, int trangthai, String id_loaitin) {

@@ -145,9 +145,8 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 }else {
                     Toast.makeText(this, "Bạn cần đăng nhập để bình luận", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this,MainActivity.class);
+                    Intent intent = new Intent(this,DangNhap.class);
                     startActivity(intent);
-                    finish();
                 }
                 break;
             case R.id.imageback:
