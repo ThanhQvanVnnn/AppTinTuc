@@ -8,12 +8,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.apptintuc.Adapter.NewsAdapter;
@@ -43,6 +45,7 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
     private TinTuc tinTuc;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AlertDialog dialog;
+    private CardView layout;
     String id_danhmuc;
 
     @Nullable
@@ -61,13 +64,16 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
                     @Override
                     public void onResponse(Call<List<TinTuc>> call, Response<List<TinTuc>> response) {
                         tinTucs.addAll(response.body());
-                        tinTuc = tinTucs.get(0);
-                        Picasso.get().load(tinTuc.getImg()).into(kenBurnsView);
-                        firstTitle.setText(tinTuc.getTieude());
-                        recyclerView.setAdapter(newsAdapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
-                        newsAdapter.notifyDataSetChanged();
-                        swipeRefreshLayout.setRefreshing(false);
+                        if(tinTucs.size()!=0) {
+                            layout.setVisibility(View.VISIBLE);
+                            tinTuc = tinTucs.get(0);
+                            Picasso.get().load(tinTuc.getImg()).into(kenBurnsView);
+                            firstTitle.setText(tinTuc.getTieude());
+                            recyclerView.setAdapter(newsAdapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                            newsAdapter.notifyDataSetChanged();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }else layout.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -90,20 +96,24 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
                 ,getResources().getColor(R.color.colorPrimary));
         dialog = new SpotsDialog(getContext());
         apiService = FromRepository.getApiService();
+        layout = view.findViewById(R.id.layout_first);
         tinTucs = new ArrayList<>();
         tinTucsRecycler = new ArrayList<>();
         apiService.getTinTuc("LayDanhSachTinTuc",id_danhmuc).enqueue(new Callback<List<TinTuc>>() {
             @Override
             public void onResponse(Call<List<TinTuc>> call, Response<List<TinTuc>> response) {
                 tinTucs.addAll(response.body());
-                tinTuc = tinTucs.get(0);
-                Picasso.get().load(tinTuc.getImg()).into(kenBurnsView);
-                firstTitle.setText(tinTuc.getTieude());
-                tinTucsRecycler = response.body();
-                tinTucsRecycler.remove(0);
-                newsAdapter = new NewsAdapter(getContext(),tinTucsRecycler);
-                recyclerView.setAdapter(newsAdapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+                if (tinTucs.size() != 0) {
+                    layout.setVisibility(View.VISIBLE);
+                    tinTuc = tinTucs.get(0);
+                    Picasso.get().load(tinTuc.getImg()).into(kenBurnsView);
+                    firstTitle.setText(tinTuc.getTieude());
+                    tinTucsRecycler = response.body();
+                    tinTucsRecycler.remove(0);
+                    newsAdapter = new NewsAdapter(getContext(), tinTucsRecycler);
+                    recyclerView.setAdapter(newsAdapter);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                }else layout.setVisibility(View.GONE);
             }
 
             @Override
@@ -150,11 +160,14 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
             @Override
             public void onResponse(Call<List<TinTuc>> call, Response<List<TinTuc>> response) {
                 tinTucs.addAll(response.body());
-                tinTuc = tinTucs.get(0);
-                Picasso.get().load(tinTuc.getImg()).into(kenBurnsView);
-                firstTitle.setText(tinTuc.getTieude());
-                recyclerView.setAdapter(newsAdapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+                if (tinTucs.size() != 0) {
+                    layout.setVisibility(View.VISIBLE);
+                    tinTuc = tinTucs.get(0);
+                    Picasso.get().load(tinTuc.getImg()).into(kenBurnsView);
+                    firstTitle.setText(tinTuc.getTieude());
+                    recyclerView.setAdapter(newsAdapter);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                }else layout.setVisibility(View.GONE);
             }
 
             @Override

@@ -2,7 +2,7 @@ package com.example.apptintuc.Object;
 
 public class User {
     private String id_user;
-    private String hoten;
+    private String username;
     private String email;
     private String sdt;
     private String password;
@@ -11,7 +11,7 @@ public class User {
 
     public User(String id_user, String hoten, String email, String sdt, String password, String trangthai, String capquyen) {
         this.id_user = id_user;
-        this.hoten = hoten;
+        this.username = hoten;
         this.email = email;
         this.sdt = sdt;
         this.password = password;
@@ -31,11 +31,11 @@ public class User {
     }
 
     public String getHoten() {
-        return hoten;
+        return username;
     }
 
     public void setHoten(String hoten) {
-        this.hoten = hoten;
+        this.username = hoten;
     }
 
     public String getEmail() {
