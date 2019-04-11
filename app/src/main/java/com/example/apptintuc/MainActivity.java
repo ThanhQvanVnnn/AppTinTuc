@@ -156,6 +156,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.luutin) {
 
+            intent = new Intent(this,LuuTin.class);
+            startActivity(intent);
+
         } else if (id == R.id.logout) {
             user =null;
             SharedPreferences.Editor editor = mPrefs.edit();

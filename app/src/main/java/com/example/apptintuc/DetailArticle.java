@@ -2,6 +2,8 @@ package com.example.apptintuc;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -34,8 +36,10 @@ import android.widget.Toast;
 
 import com.example.apptintuc.Api.ApiService;
 import com.example.apptintuc.GetDataBase.FromRepository;
+import com.example.apptintuc.GetDataBase.TinTucViewModel;
 import com.example.apptintuc.Object.BinhLuan;
 import com.example.apptintuc.Object.EditTextInPut;
+import com.example.apptintuc.Object.TinTuc;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -68,6 +72,9 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
     int socomment;
     private final int REQUESTCODE_BINHLUAN = 1;
     private final int REQUESTCODE_DANGKY = 2;
+    private List<TinTuc> tinTucList;
+    private TinTuc tinTuc;
+    private TinTucViewModel tinTucViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +82,7 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_detail_article);
         firstInits();
         OnsCroll();
-       setNumberBinhLuan();
+        setNumberBinhLuan();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -85,23 +92,24 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                 setNumberBinhLuan();
             }
         });
-        button_binhluan.setOnClickListener(this);
-        button_submitBinhLuan.setOnClickListener(this);
-        luutrang.setOnClickListener(this);
-        layout_itconBinhLuan.setOnClickListener(this);
-        input_binhluan.setKeyImeChangeListener(new EditTextInPut.KeyImeChange(){
+        input_binhluan.setKeyImeChangeListener(new EditTextInPut.KeyImeChange() {
             @Override
-            public void onKeyIme(int keyCode, KeyEvent event)
-            {
-                if (KeyEvent.KEYCODE_BACK == event.getKeyCode())
-                {
+            public void onKeyIme(int keyCode, KeyEvent event) {
+                if (KeyEvent.KEYCODE_BACK == event.getKeyCode()) {
                     button_binhluan.setVisibility(View.VISIBLE);
                     luutrang.setVisibility(View.VISIBLE);
                     layout_itconBinhLuan.setVisibility(View.VISIBLE);
                     input_binhluan.setVisibility(View.GONE);
                     button_submitBinhLuan.setVisibility(View.GONE);
                 }
-            }});
+            }
+        });
+
+        button_binhluan.setOnClickListener(this);
+        button_submitBinhLuan.setOnClickListener(this);
+        luutrang.setOnClickListener(this);
+        layout_itconBinhLuan.setOnClickListener(this);
+        setWebView();
     }
 
     public void setNumberBinhLuan(){
@@ -135,9 +143,17 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.luutin:
 
+                if(kiemtratontai(tinTucList,tinTuc)){
+                    tinTucViewModel.detete_tintuc(tinTuc.getId_tin());
+                    Toast.makeText(this, "Đã xóa lưu", Toast.LENGTH_SHORT).show();
+                    luutrang.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
+                }else {
+                    tinTucViewModel.insert_tintuc(tinTuc);
+                    Toast.makeText(this, "Đã lưu tin", Toast.LENGTH_SHORT).show();
+                    luutrang.setImageResource(R.drawable.ic_bookmark_black_24dp);
+                }
                 break;
             case R.id.send_button:
-
                    String binhluan = input_binhluan.getText().toString();
                    Calendar calendar = Calendar.getInstance();
                    java.sql.Date startDate = new java.sql.Date(calendar.getTime().getTime());
@@ -187,6 +203,13 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    private boolean kiemtratontai(List<TinTuc> tinTucList, TinTuc tinTuc) {
+        for (TinTuc tinTuc1:tinTucList){
+            if(tinTuc1.getId_tin() == tinTuc.getId_tin())
+                return true;
+        }
+        return false;
+    }
 
 
     private void firstInits() {
@@ -199,15 +222,26 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
         apiService = FromRepository.getApiService();
         button_binhluan = findViewById(R.id.button_input_comment);
         luutrang = findViewById(R.id.luutin);
+        tinTucViewModel = ViewModelProviders.of(this).get(TinTucViewModel.class);
         input_binhluan = findViewById(R.id.edittext_input_comment);
         button_submitBinhLuan = findViewById(R.id.send_button);
         soluongbinhluan = findViewById(R.id.number_binhluan);
+        tinTucList = new ArrayList<>();
         layout_itconBinhLuan = findViewById(R.id.layout_iconbinhluan);
         swipeRefreshLayout = findViewById(R.id.swipedetail);
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary)
                 ,getResources().getColor(R.color.colorPrimary)
                 ,getResources().getColor(R.color.colorPrimary));
-
+        try {
+            tinTucViewModel.getTintuclist().observe(this, new Observer<List<TinTuc>>() {
+                @Override
+                public void onChanged(@Nullable List<TinTuc> tinTucs) {
+                    tinTucList = tinTucs;
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         setWebView();
     }
 
@@ -221,6 +255,23 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
         socomment = bundle.getInt("SizeBinhLuan");
         String mime = "text/html";
         String encoding = "utf-8";
+        apiService.LayTinTheoId("LayTinTheoId",id_new).enqueue(new Callback<TinTuc>() {
+            @Override
+            public void onResponse(Call<TinTuc> call, Response<TinTuc> response) {
+                tinTuc = response.body();
+                boolean kiemtra = kiemtratontai(tinTucList,tinTuc);
+                if(kiemtra){
+                    luutrang.setImageResource(R.drawable.ic_bookmark_black_24dp);
+                }else {
+                    luutrang.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TinTuc> call, Throwable t) {
+                Log.d("kiemtra","lấy tin theo ID"+ t.getMessage());
+            }
+        });
         String style ="<style>img{display: inline;height: auto;max-width: 100%;}</style>";
         textTile.setText(tieude);
         webView.getSettings().setJavaScriptEnabled(true);
@@ -388,4 +439,5 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
             }
 
     }
+
 }

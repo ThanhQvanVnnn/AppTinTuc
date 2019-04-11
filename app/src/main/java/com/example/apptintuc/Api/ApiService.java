@@ -39,6 +39,10 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST(" ")
+    Call<TinTuc> LayTinTheoId(@Field("ham") String ham, @Field("id_new") int idTin);
+
+    @FormUrlEncoded
+    @POST(" ")
     Call<List<TinTuc>> getTimKiem(@Field("ham") String ham, @Field("noidung") String noidung);
 
     @FormUrlEncoded
