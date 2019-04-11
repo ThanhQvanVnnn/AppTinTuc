@@ -121,7 +121,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                     if (binhluan.length() == 0) {
                         Toast.makeText(this, "Vui lòng không để trống ", Toast.LENGTH_SHORT).show();
                     } else {
-                        apiService.ThemBinhLuan("ThemBinhLuan", String.valueOf(id_new), "thanhquanqwer@gmail.com", startDate.toString(), "quanle", binhluan).enqueue(new Callback<String>() {
+                        apiService.ThemBinhLuan("ThemBinhLuan", String.valueOf(id_new), MainActivity.user.getEmail(), startDate.toString(), MainActivity.user.getId_user(), binhluan).enqueue(new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
                                 BinhLuan binhLuan = new BinhLuan("thanhquanqwer@gmail.com", startDate.toString(), binhluan, id_new, "quanle");

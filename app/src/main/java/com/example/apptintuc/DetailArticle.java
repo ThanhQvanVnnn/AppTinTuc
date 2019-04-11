@@ -164,7 +164,6 @@ public class DetailArticle extends AppCompatActivity implements View.OnClickList
                            @Override
                            public void onResponse(Call<String> call, Response<String> response) {
                                final String trave = response.body();
-
                                if (trave.equals("fail")) {
                                    Toast.makeText(DetailArticle.this, "Bình luân thất bại", Toast.LENGTH_SHORT).show();
                                } else if (trave.equals("success")) {
