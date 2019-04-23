@@ -97,6 +97,7 @@ public class DangNhap extends AppCompatActivity  implements View.OnClickListener
                     public void onFailure(Call<User> call, Throwable t) {
                         dialog.dismiss();
                         Toast.makeText(DangNhap.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                        Log.d("kiemtra" , "dang nhap fail: "+t.getMessage());
                     }
                 });
                 break;

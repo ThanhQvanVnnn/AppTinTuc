@@ -78,7 +78,7 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
 
                     @Override
                     public void onFailure(Call<List<TinTuc>> call, Throwable t) {
-                        Log.d("kiemtra","Lỗi :"+t.getMessage().toString());
+                        Log.d("kiemtra","Lỗi lấy tin tức :"+t.getMessage().toString());
                     }
                 });
             }
@@ -118,7 +118,7 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
 
             @Override
             public void onFailure(Call<List<TinTuc>> call, Throwable t) {
-                Log.d("kiemtra","Lỗi :"+t.getMessage().toString());
+                Log.d("kiemtra","Lỗi  :"+t.getMessage().toString());
             }
         });
         kenBurnsView.setOnClickListener(this);
@@ -146,7 +146,7 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
 
                     @Override
                     public void onFailure(Call<List<BinhLuan>> call, Throwable t) {
-                        Log.d("Kiemtra", "Lỗi " + t.getMessage().toString());
+                        Log.d("Kiemtra", "Lỗi lấy danh sách bình luận " + t.getMessage().toString());
                     }
                 });
                 break;
@@ -172,7 +172,7 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
 
             @Override
             public void onFailure(Call<List<TinTuc>> call, Throwable t) {
-                Log.d("kiemtra","Lỗi :"+t.getMessage().toString());
+                Log.d("kiemtra","Lỗi lấy tin tức :"+t.getMessage().toString());
             }
         });
 
