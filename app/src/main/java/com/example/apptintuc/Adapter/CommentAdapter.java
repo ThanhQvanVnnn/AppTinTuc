@@ -17,6 +17,7 @@ import com.example.apptintuc.Object.User;
 import com.example.apptintuc.R;
 
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,7 +50,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 User user = response.body();
-                viewHolder.tenUser.setText(user.getHoten());
+                try {
+                    if (user == null) {
+                        viewHolder.tenUser.setText(user.getEmail());
+                    } else {
+                        viewHolder.tenUser.setText(user.getHoten());
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
 
             @Override

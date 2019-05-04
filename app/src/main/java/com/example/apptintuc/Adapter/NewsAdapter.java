@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import dmax.dialog.SpotsDialog;
 import retrofit2.Call;
@@ -80,8 +82,18 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                 Log.d("Kiemtra", "Lỗi " + t.getMessage().toString());
             }
         });
+        Pattern pattern = Pattern.compile("(<img .*?>)");
+        Matcher matcher = pattern.matcher(tinTuc.getNoidung());
+        if (matcher.find()) {
+            String tag =  matcher.group(1);
+            Pattern p = Pattern.compile("src=\"(.*?)\"", Pattern.DOTALL);
+            Matcher m = p.matcher(tag);
+            while (m.find())
+            {
+                Picasso.get().load( m.group(1)).into(viewHolder.image);
+            }
+        }
 
-        Picasso.get().load(tinTuc.getImg()).into(viewHolder.image);
         if (tinTuc.getTieude().length() > 65) {
             viewHolder.title.setText(tinTuc.getTieude().substring(0, 65) + "...");
         } else {

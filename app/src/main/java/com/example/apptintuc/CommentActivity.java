@@ -86,7 +86,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                 ,getResources().getColor(R.color.colorPrimary));
         binhLuanList = new ArrayList<>();
        Intent intent =getIntent();
-        id_new = intent.getIntExtra("maTin",-1);
+       id_new = intent.getIntExtra("maTin",-1);
        title = intent.getStringExtra("title");
        TextTitle.setText(title);
        apiService = FromRepository.getApiService();

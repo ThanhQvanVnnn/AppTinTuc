@@ -28,6 +28,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import dmax.dialog.SpotsDialog;
 import retrofit2.Call;
@@ -163,7 +165,18 @@ public class DanhMucTinTucFragment extends Fragment implements View.OnClickListe
                 if (tinTucs.size() != 0) {
                     layout.setVisibility(View.VISIBLE);
                     tinTuc = tinTucs.get(0);
-                    Picasso.get().load(tinTuc.getImg()).into(kenBurnsView);
+                    Pattern pattern = Pattern.compile("(<img .*?>)");
+                    Matcher matcher = pattern.matcher(tinTuc.getNoidung());
+                    if (matcher.find()) {
+                        String tag =  matcher.group(1);
+                        Pattern p = Pattern.compile("src=\"(.*?)\"", Pattern.DOTALL);
+                        Matcher m = p.matcher(tag);
+
+                        while (m.find())
+                        {
+                            Picasso.get().load( m.group(1)).into(kenBurnsView);
+                        }
+                    }
                     firstTitle.setText(tinTuc.getTieude());
                     recyclerView.setAdapter(newsAdapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
